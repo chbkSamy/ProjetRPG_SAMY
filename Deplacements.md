@@ -1,6 +1,7 @@
 ## Déplacement du personnage sur la grille
 ### Description générale
 Le jeu se déroule sur une grille bidimensionnelle représentant le donjon que le personnage explore. Le personnage peut se déplacer dans les quatre directions cardinales : Nord, Sud, Est, Ouest. Chaque case de la grille peut contenir différents éléments tels que des monstres, des trésors ou être vide.
+En arrivant sur les bords de cette grille, le joueur change de grille si elle existe, et si il ny'a pas de mur qui bloque le joueur.
 
 ### Grille
 La grille est définie par des coordonnées (x, y).
