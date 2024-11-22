@@ -71,3 +71,9 @@ Les joueurs explorent un donjon généré aléatoirement, affrontent des monstre
 1.  **Test d'ajout d'objets à l'inventaire** : Vérifier que les objets trouvés sont correctement ajoutés à l'inventaire du joueur.
 2.  **Test d'utilisation des objets** : Assurer que le joueur peut utiliser des potions pendant le combat et que leurs effets sont bien appliqués.
 3.  **Test d'équipement d'armes/armures** : Vérifier que l'équipement d'objets modifie bien les statistiques du personnage.
+
+
+# Persistence des données : 
+
+L'état de la partie doit être persistée (sur boutons / commande ou en automatique)
+La persistence peut être faite de n'importe quelle façon (bdd, fichier ...) Sauf du inMemory, je dois être capable de retrouver ma sauvegarde après redémarrage
