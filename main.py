@@ -8,7 +8,7 @@ voleur = Classes("Voleur", 110, 70, 10, 7, 8, 7, 15, 12, 7, 6)
 classes_disponibles = [guerrier, mage, voleur]
 
 def nom_personnage():
-    print("Le nom du personnage doit avoir entre 3 et 10 caractères.")
+    
     nom = input("Entrez le nom du personnage : ")
     while len(nom) < 3 or len(nom) > 10:
         print("Le nom du personnage doit avoir entre 3 et 10 caractères.")
