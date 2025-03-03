@@ -39,3 +39,4 @@ classe = choix_classe()
 
 perso = Personnage(nom_personnage, classe)
 recap_perso(perso)
+print("Personnage créé avec succès !")
