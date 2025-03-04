@@ -1,4 +1,4 @@
-from classes import Classes
+from .classes import Classes
 
 class Personnage:
     def __init__(self, nom: str, classe: Classes):

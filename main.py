@@ -1,5 +1,6 @@
-from personnage import Personnage
+from personnage.personnage import Personnage
 from grilles import Grille
+
 
 if __name__ == "__main__":
 

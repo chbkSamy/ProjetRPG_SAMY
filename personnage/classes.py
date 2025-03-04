@@ -1,5 +1,6 @@
 from enum import Enum
-from stats import Stats
+from .stats import Stats
+
 
 class Classes(Enum):
     GUERRIER = {
