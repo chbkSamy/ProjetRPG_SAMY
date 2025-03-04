@@ -17,7 +17,6 @@ class Personnage:
         return nom_perso
 
 
-
     def choix_classe():
         classe_dispo = [Guerrier(), Mage(), Voleur()]
         print("Choisissez votre classe:")
@@ -25,6 +24,7 @@ class Personnage:
             print(f"{i+1}. {classe.nom}")
         choix = int(input("Entrez le numéro de la classe choisie: "))
         return classe_dispo[choix-1]
+
 
     def recap_perso(self):
         print(f"Nom: {self.nom_personnage}")

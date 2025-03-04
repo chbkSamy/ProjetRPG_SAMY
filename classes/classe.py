@@ -1,4 +1,3 @@
-
 class Classe:
     def __init__(self, nom, pv, pm, force, intelligence, défense, résistance_magique, agilité, chance, endurance, esprit):
         self.nom = nom
