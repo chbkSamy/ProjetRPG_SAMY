@@ -1,11 +1,4 @@
-import deplacement
-import donjon
-import personnages
-from classes.classe import Classe
 from personnages import Personnage
-from grilles import Grille
-from donjon import Donjon
-from deplacement import Deplacement
 
 def main():
 
