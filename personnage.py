@@ -1,47 +1,57 @@
 from classes import Classes
+from stats import Stats
 
-class Personnage(Classes):
-    def __init__(self, nom_personnage, classe):
-        super().__init__(classe.nom, classe.pv, classe.pm, classe.force, classe.intelligence,
-                         classe.defense, classe.resistance_magique, classe.agilite, classe.chance,
-                         classe.endurance, classe.esprit)
-        self.nom_personnage = nom_personnage
-        self.classe = classe.nom
+class Personnage:
+    STATS_PAR_CLASSE = {
+        Classes.GUERRIER: Stats(
+            pv=150, pm=150, force=15, intelligence=5,
+            defense=12, resistance_magique=6, agilite=8,
+            chance=5, endurance=10, esprit=4
+        ),
+        Classes.MAGE: Stats(
+            pv=90, pm=150, force=4, intelligence=15,
+            defense=5, resistance_magique=12, agilite=7,
+            chance=6, endurance=5, esprit=10
+        ),
+        Classes.VOLEUR: Stats(
+            pv=110, pm=70, force=10, intelligence=7,
+            defense=8, resistance_magique=7, agilite=15,
+            chance=12, endurance=7, esprit=6
+        )
+    }
 
+    def __init__(self, nom: str, classe: Classes):
+        self.nom = nom
+        self.classe = classe
+        self.stats = self.STATS_PAR_CLASSE[classe]
 
     @classmethod
     def initialiser_personnage(cls):
-        nom = input("Entrez le nom du personnage : ")
+        nom = input("Nom du personnage : ")
         while len(nom) < 3 or len(nom) > 10:
-            print("Le nom du personnage doit avoir entre 3 et 10 caractères.")
-            nom = input("Entrez le nom du personnage : ")
-        classes_disponibles = [
-            Classes("Guerrier", 150, 150, 15, 5, 12, 6, 8, 5, 10, 4),
-            Classes("Mage", 90, 150, 4, 15, 5, 12, 7, 6, 5, 10),
-            Classes("Voleur", 110, 70, 10, 7, 8, 7, 15, 12, 7, 6)
-        ]
-        print("Choisissez une classe :")
-        for i, classe in enumerate(classes_disponibles):
-            print(f"{i + 1}. {classe.nom}")
-        choix = int(input("Entrez le numéro de la classe choisie : "))
-        selected_classe = classes_disponibles[choix - 1]
-        return cls(nom, selected_classe)
+            nom = input("Nom invalide (3-10 caractères) : ")
 
+        print("Classes disponibles :")
+        for idx, classe in enumerate(Classes):
+            print(f"{idx + 1}. {classe.value}")
+
+        choix = int(input("Choix : ")) - 1
+        return cls(nom, list(Classes)[choix])
 
     def recapitulatif_personnage(self):
-        print("Recapitulatif du personnage :")
-        print(f"Nom : {self.nom_personnage}")
-        print(f"Classe : {self.classe}")
-        print(f"PV : {self.pv}")
-        print(f"PM : {self.pm}")
-        print(f"Force : {self.force}")
-        print(f"Intelligence : {self.intelligence}")
-        print(f"Defense : {self.defense}")
-        print(f"Resistance magique : {self.resistance_magique}")
-        print(f"Agilité : {self.agilite}")
-        print(f"Chance : {self.chance}")
-        print(f"Endurance : {self.endurance}")
-        print(f"Esprit : {self.esprit}")
+        print("\n=== Récapitulatif du personnage ===")
+        print(f"Nom : {self.nom}")
+        print(f"Classe : {self.classe.value}")
+        print(f"PV : {self.stats.pv}")
+        print(f"PM : {self.stats.pm}")
+        print(f"Force : {self.stats.force}")
+        print(f"Intelligence : {self.stats.intelligence}")
+        print(f"Defense : {self.stats.defense}")
+        print(f"Résistance magique : {self.stats.resistance_magique}")
+        print(f"Agilité : {self.stats.agilite}")
+        print(f"Chance : {self.stats.chance}")
+        print(f"Endurance : {self.stats.endurance}")
+        print(f"Esprit : {self.stats.esprit}\n")
 
 
 
