@@ -14,25 +14,4 @@ def main():
     personnage = Personnage(nom_perso=choix_nom, classe_perso=selection_classe)
     personnage.recap_perso()
 
-    # while True:
-    #     print(f"\n📍 Position: ({deplacement.x}, {deplacement.y}) - Orientation: {deplacement.directions[deplacement.orientation]}")
-    #     print(f"📦 Contenu de la salle: {donjon.afficher_salle(deplacement.x, deplacement.y)}")
-    #     print(f"⚔️ Personnage : {personnages.nom} | ❤️ PV : {personnages.pv}")
-
-    #     # Affichage de la mini-map
-    #     donjon.afficher_minimap(deplacement.x, deplacement.y)
-
-    #     commande = input("🕹️ Commande (N/S/E/O/A/G/D) : ").upper()
-
-    #     if commande in ["N", "S", "E", "O"]:
-    #         deplacement.deplacer(commande)
-    #     elif commande == "A":
-    #         deplacement.avancer()
-    #     elif commande == "G":
-    #         deplacement.tourner_gauche()
-    #     elif commande == "D":
-    #         deplacement.tourner_droite()
-    #     else:
-    #         print("⚠️ Commande invalide.")
-
 main()
