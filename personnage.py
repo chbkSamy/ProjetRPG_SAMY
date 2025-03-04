@@ -4,7 +4,7 @@ class Personnage:
     def __init__(self, nom: str, classe: Classes):
         self.nom = nom
         self.classe = classe
-        self.stats = classe.stats  
+        self.stats = classe.stats
 
     @classmethod
     def initialiser_personnage(cls):
