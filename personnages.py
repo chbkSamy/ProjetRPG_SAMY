@@ -1,14 +1,20 @@
+from typing import Self
+from classes.classe import Classe
 from classes.guerrier import Guerrier
 from classes.mage import Mage
 from classes.voleur import Voleur
 
 
-class Personnage:
+class Personnage (Classe):
     def __init__(self, nom_perso, classe_perso):
+        super().__init__(classe_perso.nom, classe_perso.pv, classe_perso.pm, classe_perso.force,
+                         classe_perso.intelligence, classe_perso.défense, 
+                         classe_perso.résistance_magique, classe_perso.agilité, 
+                         classe_perso.chance, classe_perso.endurance, classe_perso.esprit)
         self.nom_personnage = nom_perso
         self.classe = classe_perso
-
-
+        
+        
     def nom_personnage():
         nom_perso = input("Entrez le nom de votre personnage: ")
         while len(nom_perso) < 2 or len(nom_perso) > 15:
