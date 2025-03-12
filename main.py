@@ -1,11 +1,8 @@
 from personnage.personnage import Personnage
-from grilles import Grille
+from plateau.jeu import Jeu
 
 
 if __name__ == "__main__":
-
-    personnage = Personnage.initialiser_personnage()
-    personnage.recapitulatif_personnage()
-    grille = Grille()
-    grille.jouer()
+    jeu = Jeu()
+    jeu.jouer()
 

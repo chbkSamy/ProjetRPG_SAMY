@@ -1,5 +1,5 @@
 from enum import Enum
-from ProjetRPG_SAMY.personnage.stats import Stats
+from personnage.stats import Stats
 
 
 class Monstres(Enum):
