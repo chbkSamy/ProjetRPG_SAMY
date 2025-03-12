@@ -1,6 +1,7 @@
 from personnage.personnage import Personnage
 from .joueur import Joueur
 from .grille import Grille
+from .monstres import Monstres
 from .controleur_deplacement import ControleurDeplacement
 class Jeu:
     def __init__(self):
@@ -9,10 +10,16 @@ class Jeu:
         self.grille = Grille()
         self.controleur = ControleurDeplacement(self.joueur, self.grille)
 
+
+        self.liste_monstres = [Monstres.SLIME, Monstres.DRAGON]
+
+
+        self.grille.placer_monstres_aleatoires(nombre_monstres=3, liste_monstres=self.liste_monstres)
+
     def jouer(self):
         """Lance le jeu et gère les interactions utilisateur."""
         print("Bienvenue dans le jeu de déplacement sur grille !")
-        self.personnage.recapitulatif_personnage()  
+        self.personnage.recapitulatif_personnage()
         print(f"Position initiale : {self.joueur.get_position()}, Orientation : {self.joueur.get_orientation()}")
 
         while True:
