@@ -1,4 +1,3 @@
-from typing import Self
 from classes.classe import Classe
 from classes.guerrier import Guerrier
 from classes.mage import Mage
