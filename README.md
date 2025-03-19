@@ -1,4 +1,4 @@
-## Projet RPG
+## Projet RPG Nicolas Chlebowski
 #### Objectif
 
 Les joueurs explorent un donjon généré aléatoirement, affrontent des monstres, et collectent des trésors tout en améliorant leurs compétences. Tout se fait via des commandes textuelles, et chaque tour de jeu permet au joueur de prendre des décisions simples : se déplacer, combattre, ramasser des objets, etc.
