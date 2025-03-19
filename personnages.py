@@ -12,7 +12,9 @@ class Personnage (Classe):
                          classe_perso.chance, classe_perso.endurance, classe_perso.esprit)
         self.nom_personnage = nom_perso
         self.classe = classe_perso
-        
+    
+    def attaquer(self):
+        return self.force
         
     def nom_personnage():
         nom_perso = input("Entrez le nom de votre personnage: ")
