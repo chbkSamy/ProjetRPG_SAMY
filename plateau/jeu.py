@@ -1,11 +1,12 @@
 from personnage.personnage import Personnage
+from personnage.personnageFactory import PersonnageFactory  # Modification de l'import
 from .joueur import Joueur
 from .grille import Grille
 from personnage.monstres import Monstres
 from .controleur_deplacement import ControleurDeplacement
 class Jeu:
     def __init__(self):
-        self.personnage = Personnage.initialiser_personnage()
+        self.personnage = PersonnageFactory.initialiser_personnage()
         self.joueur = Joueur()
         self.grille = Grille()
         self.controleur = ControleurDeplacement(self.joueur, self.grille)

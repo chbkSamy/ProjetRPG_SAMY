@@ -1,23 +1,10 @@
-from .classes import Classes
+from .interfaces import ClasseProvider, Stats
 
 class Personnage:
-    def __init__(self, nom: str, classe: Classes):
+    def __init__(self, nom: str, classe: ClasseProvider):
         self.nom = nom
         self.classe = classe
         self.stats = classe.stats
-
-    @classmethod
-    def initialiser_personnage(cls):
-        nom = input("Nom du personnage : ")
-        while len(nom) < 3 or len(nom) > 10:
-            nom = input("Nom invalide (3-10 caractères) : ")
-
-        print("Classes disponibles :")
-        for idx, classe in enumerate(Classes):
-            print(f"{idx + 1}. {classe.nom}")
-
-        choix = int(input("Choix : ")) - 1
-        return cls(nom, list(Classes)[choix])
 
     def recapitulatif_personnage(self):
         print("\n=== Récapitulatif du personnage ===")
