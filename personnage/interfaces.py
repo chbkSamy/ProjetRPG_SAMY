@@ -1,29 +1,23 @@
-from dataclasses import dataclass
-from typing import Protocol
+from abc import ABC, abstractmethod
 
-@dataclass
-class Stats:
-    pv: int
-    pm: int
-    force: int
-    intelligence: int
-    defense: int
-    resistance_magique: int
-    agilite: int
-    chance: int
-    endurance: int
-    esprit: int
-
-class ClasseProvider(Protocol):
+class ClasseProvider(ABC):
     @property
-    def nom(self) -> str: ...
+    @abstractmethod
+    def nom(self):
+        pass
 
     @property
-    def stats(self) -> Stats: ...
+    @abstractmethod
+    def stats(self):
+        pass
 
-class MonstreProvider(Protocol):
+class MonstreProvider(ABC):
     @property
-    def nom(self) -> str: ...
+    @abstractmethod
+    def nom(self):
+        pass
 
     @property
-    def stats(self) -> Stats: ...
+    @abstractmethod
+    def stats(self):
+        pass

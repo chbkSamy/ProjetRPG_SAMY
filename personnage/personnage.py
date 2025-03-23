@@ -1,4 +1,5 @@
-from .interfaces import ClasseProvider, Stats
+from .interfaces import ClasseProvider
+from .stats import Stats
 
 class Personnage:
     def __init__(self, nom: str, classe: ClasseProvider):

@@ -1,37 +1,19 @@
 from enum import Enum
-from .interfaces import Stats
+from .stats import Stats
+from .interfaces import MonstreProvider
 
 class Monstres(Enum):
     SLIME = {
         "nom": "Slime",
-        "stats": Stats(
-            pv=50,
-            pm=100,
-            force=5,
-            intelligence=5,
-            defense=5,
-            resistance_magique=5,
-            agilite=5,
-            chance=5,
-            endurance=5,
-            esprit=5
-        )
+        "stats": Stats(50,100,5,5,5,5,5,5,5,5)
     }
-
-    DRAGON = {
+    SQUELETTE = {
         "nom": "Squelette",
-        "stats": Stats(
-            pv=100,
-            pm=200,
-            force=10,
-            intelligence=10,
-            defense=10,
-            resistance_magique=10,
-            agilite=10,
-            chance=10,
-            endurance=10,
-            esprit=10
-        )
+        "stats": Stats(100,200,10,10,10,10,10,10,10,10)
+    }
+    DRAGON = {
+        "nom": "Dragon",
+        "stats": Stats(150,300,15,15,15,15,15,15,15,15)
     }
 
     @property
@@ -41,3 +23,6 @@ class Monstres(Enum):
     @property
     def stats(self):
         return self.value["stats"]
+
+
+MonstreProvider.register(Monstres)
