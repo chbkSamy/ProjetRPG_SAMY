@@ -1,37 +1,39 @@
-from .interfaces import Positionnable
-from .grille import Grille
+from mouvement.direction import Direction
+from plateau.grille import Grille
 
 class ControleurDeplacement:
-    def __init__(self, joueur: Positionnable, grille: Grille):
-        self._joueur = joueur
-        self._grille = grille
+    def __init__(self, joueur, grille: Grille):
+        self.joueur = joueur
+        self.grille = grille
 
-    def executer_deplacement(self, commande: str) -> str:
-        if commande in ['N', 'S', 'E', 'O']:
-            self._joueur.set_orientation(commande)
-        else:
+    def executer_deplacement(self, direction: str) -> str:
+        try:
+            direction_enum = Direction(direction)
+        except ValueError:
             return "Commande invalide."
 
-        dx, dy = self._joueur.get_orientation_vecteur()
-        x, y = self._joueur.position
-        new_x = x + dx
-        new_y = y + dy
-        direction = self._joueur.orientation
+        self.joueur.mover.direction = direction_enum
+        new_pos = self.joueur.calculate_new_position()
 
-        if not self._grille.valider_position(new_x, new_y):
-            return f"Vous avez atteint le bord du monde. Vous ne pouvez pas aller plus au {direction}."
+        if not self._valider_deplacement(new_pos):
+            return self._analyser_obstacle(new_pos)
 
-        if self._grille.obtenir_obstacle(new_x, new_y):
-            return "Un obstacle vous bloque le passage. Vous ne pouvez pas aller par là."
+        self.joueur.deplacer(new_pos)
+        return self._analyser_contenu_case(new_pos)
 
-        if self._grille.obtenir_monstre(new_x, new_y):
-            return "Un monstre bloque votre chemin ! Vous devez le vaincre pour avancer."
+    def _valider_deplacement(self, position: tuple[int, int]) -> bool:
+        return self.grille.valider_position(*position)
 
-        tresor = self._grille.obtenir_tresor(new_x, new_y)
-        if tresor:
-            self._joueur.deplacer(new_x, new_y)
-            self._joueur.inventaire.append(tresor)
-            return f"Vous avez trouvé un trésor en position {self._joueur.position} !"
+    def _analyser_obstacle(self, position: tuple[int, int]) -> str:
+        x, y = position
+        if not self.grille.valider_position(x, y):
+            return "Bord du monde atteint !"
+        if self.grille.obtenir_obstacle(x, y):
+            return "Obstacle détecté !"
+        if self.grille.obtenir_monstre(x, y):
+            return "Monstre en vue !"
+        return ""
 
-        self._joueur.deplacer(new_x, new_y)
-        return f"Vous êtes maintenant en position {self._joueur.position}."
+    def _analyser_contenu_case(self, position: tuple[int, int]) -> str:
+        tresor = self.grille.obtenir_tresor(*position)
+        return f"Trésor {tresor.nom} trouvé !" if tresor else "Déplacement réussi"
