@@ -2,3 +2,8 @@ from .testClasses import TestClasses
 from .testMonstres import TestMonstres
 from .testPersonnage import TestPersonnage
 from .testStats import TestStats
+from .testGrille import TestGrille
+from .testJoueur import TestJoueur
+from .testGameView import TestGameView
+from .testJeu import TestJeu
+from .testJoueur import TestJoueur

@@ -1,0 +1,21 @@
+import unittest
+from unittest.mock import MagicMock
+from plateau.controleur_deplacement import ControleurDeplacement
+
+
+class TestControleurDeplacement(unittest.TestCase):
+    def setUp(self):
+        self.joueur = MagicMock()
+        self.grille = MagicMock()
+        self.controleur = ControleurDeplacement(self.joueur, self.grille)
+
+    def test_deplacement_valide(self):
+        self.joueur.position = (2, 2)
+        self.joueur.get_orientation_vecteur.return_value = (0, 1)
+        self.grille.valider_position.return_value = True
+        self.grille.obtenir_obstacle.return_value = None
+        self.grille.obtenir_monstre.return_value = None
+        self.grille.obtenir_tresor.return_value = None
+
+        resultat = self.controleur.executer_deplacement('N')
+        self.assertIn("Vous êtes maintenant en position", resultat)
