@@ -1,37 +1,47 @@
 from personnage.personnage import Personnage
-from personnage.personnageFactory import PersonnageFactory  
+from personnage.personnageFactory import PersonnageFactory
 from .joueur import Joueur
 from .grille import Grille
 from personnage.monstres import Monstres
 from .controleur_deplacement import ControleurDeplacement
 from personnage.classes import Classes
+from .gameView import GameView
+
 class Jeu:
-    def __init__(self):
-        self.factory = PersonnageFactory(Classes)
-        self.personnage = self.factory.creer_personnage()
-        self.joueur = Joueur()
-        self.grille = Grille()
-        self.controleur = ControleurDeplacement(self.joueur, self.grille)
+    def __init__(self, view: GameView):
+        self.view = view
+        self._initialiser_components()
+
+    def _initialiser_components(self):
+        self._grille = Grille(largeur=5, hauteur=5)
+        self._joueur = Joueur()
+        self._controleur = ControleurDeplacement(self._joueur, self._grille)
+        self._personnage = PersonnageFactory(Classes).creer_personnage()
 
 
-        self.liste_monstres = [Monstres.SLIME, Monstres.DRAGON]
+        self._grille.generer_monstres_aleatoires(
+            monstres_disponibles=[Monstres.SLIME, Monstres.DRAGON],
+            nombre=3
+        )
 
+    def demarrer(self):
+        self.view.afficher(self._personnage.afficher_recapitulatif())
+        self._boucle_principale()
 
-        self.grille.placer_monstres_aleatoires(nombre_monstres=3, liste_monstres=self.liste_monstres)
-
-    def jouer(self):
-        print("Bienvenue dans le jeu de déplacement sur grille !")
-        self.personnage.recapitulatif_personnage()
-        print(f"Position initiale : {self.joueur.get_position()}, Orientation : {self.joueur.get_orientation()}")
-
+    def _boucle_principale(self):
         while True:
-            commande = input("Entrez une commande (N, S, E, O, A, G, D) ou Q pour quitter : ").upper()
+            commande = self.view.demander_commande()
             if commande == 'Q':
-                print("Merci d'avoir joué !")
+                self.view.afficher("Fin du jeu.")
                 break
-            elif commande in ['N', 'S', 'E', 'O', 'A']:
-                print(self.controleur.executer_deplacement(commande))
+            elif commande in ['N', 'S', 'E', 'O']:
+                message = self._controleur.executer_deplacement(commande)
+                self.view.afficher(message)
             elif commande in ['G', 'D']:
-                print(self.joueur.tourner(commande))
+                self._joueur.tourner(commande)
+                self.view.afficher(f"Vous faites maintenant face à {self._joueur.orientation}.")
             else:
-                print("Commande invalide. Veuillez réessayer.")
+                self.view.afficher("Commande non reconnue.")
+
+
+            self.view.afficher(f"Statut -> Position : {self._joueur.position}, Orientation : {self._joueur.orientation}")
