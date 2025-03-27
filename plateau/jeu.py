@@ -1,37 +1,72 @@
-from plateau.controleur_deplacement import ControleurDeplacement
-from plateau.grille import Grille
-from .joueur import Joueur
+from core.gameState import GameState
 from .gameView import GameView
-from personnage.personnageFactory import PersonnageFactory
-from personnage.classes import Classes
+from core.registry import CommandRegistry
+from plateau.controleur_deplacement import ControleurDeplacement
+
 
 class Jeu:
     def __init__(self, view: GameView):
         self.view = view
-        self._grille = Grille(largeur=5, hauteur=5)
-        self._joueur = Joueur()
-        self._controleur = ControleurDeplacement(self._joueur, self._grille)
-        self._personnage = PersonnageFactory(Classes).creer_personnage()
+        self.state = GameState()
+        self.command_registry = CommandRegistry()
+
+        self._controleur = ControleurDeplacement(
+            self.state.joueur,
+            self.state.grille
+        )
 
     def demarrer(self):
-        self.view.afficher(self._personnage.afficher_recapitulatif())
-        self._boucle_principale()
+        """Démarre le jeu avec la boucle principale"""
+        self._afficher_introduction()
+        self._run_game_loop()
 
-    def _boucle_principale(self):
-        while True:
-            commande = self.view.demander_commande()
+    def _afficher_introduction(self):
+        """Affiche les informations initiales du jeu"""
+        intro = f"""
+        Bienvenue dans l'aventure !
+        {self.state.personnage.afficher_recapitulatif()}
+        """
+        self.view.afficher(intro)
+        self._afficher_aide_commandes()
 
-            if commande == 'Q':
-                self.view.afficher("Fin du jeu.")
-                break
+    def _run_game_loop(self):
+        """Boucle principale du jeu"""
+        while self.state.is_running:
+            try:
+                commande = self.view.demander_commande()
+                self._traiter_commande(commande)
+                self._afficher_statut()
 
-            if commande in ['N', 'S', 'E', 'O']:
-                message = self._controleur.executer_deplacement(commande)
-                self.view.afficher(message)
-            elif commande in ['G', 'D']:
-                self._joueur.tourner(commande)
-                self.view.afficher(f"Vous faites maintenant face à {self._joueur.direction.value}.")
-            else:
-                self.view.afficher("Commande non reconnue.")
+            except Exception as e:
+                self.view.afficher(f"Erreur : {str(e)}")
+                self.state.is_running = False
 
-            self.view.afficher(f"Statut -> Position : {self._joueur.position}, Orientation : {self._joueur.direction.value}")
+    def _traiter_commande(self, commande: str):
+        handler = self.command_registry.get_handler(commande)
+
+        if handler:
+            result = handler.handle(self.state)
+            self.view.afficher(result)
+        else:
+            self.view.afficher("Commande non reconnue")
+            self._afficher_aide_commandes()
+
+
+
+    def _afficher_statut(self):
+        """Affiche le statut actuel du joueur"""
+        statut = (
+            f"Position: {self.state.joueur.position}\n"
+            f"Orientation: {self.state.joueur.direction.value}"
+        )
+        self.view.afficher(statut)
+
+    def _afficher_aide_commandes(self):
+        """Affiche l'aide des commandes disponibles"""
+        aides = [
+            "Commandes disponibles:",
+            "N/S/E/O - Déplacement",
+            "G/D - Rotation",
+            "Q - Quitter"
+        ]
+        self.view.afficher('\n'.join(aides))
