@@ -2,7 +2,29 @@ import unittest
 from unittest.mock import patch
 from plateau.jeu import Jeu
 
-# Dummy handler et registry pour simuler le comportement du registre de commandes
+# Dummy implémentations pour simuler les dépendances
+
+class DummyPersonnage:
+    def afficher_recapitulatif(self):
+        return "Recap dummy"
+
+class DummyJoueur:
+    def __init__(self):
+        # On définit la position et la direction souhaitées pour le test
+        self.position = (10, 20)
+        # Simule une direction avec un attribut 'value'
+        self.direction = type("DummyDirection", (), {"value": "N"})()
+
+class DummyGrille:
+    pass
+
+class DummyGameState:
+    def __init__(self):
+        self.joueur = DummyJoueur()
+        self.grille = DummyGrille()
+        self.personnage = DummyPersonnage()
+        self.is_running = False
+
 class DummyCommandHandler:
     def handle(self, state):
         return "Command handled"
@@ -13,44 +35,30 @@ class DummyCommandRegistry:
     def get_handler(self, commande):
         return self.handler
 
-# Dummy GameState pour simuler l'état du jeu
-class DummyGameState:
-    def __init__(self):
-        from collections import namedtuple
-        DummyDirection = namedtuple("DummyDirection", ["value"])
-        # Création d'un dummy joueur avec position et direction
-        DummyJoueur = type("DummyJoueur", (), {})()
-        DummyJoueur.position = (10, 20)
-        DummyJoueur.direction = DummyDirection("N")
-        self.joueur = DummyJoueur
-        self.grille = None  # Non utilisé dans ces tests
-        # Dummy personnage pour le récapitulatif
-        class DummyPersonnage:
-            def afficher_recapitulatif(self):
-                return "Recap dummy"
-        self.personnage = DummyPersonnage()
-        self.is_running = False  # Par défaut, pour éviter la boucle infinie
-
-# Dummy GameView pour capturer les messages affichés et simuler input
 class DummyGameView:
     def __init__(self):
         self.messages = []
     def afficher(self, message: str):
         self.messages.append(message)
     def demander_commande(self):
-        return "Q"  # Retourne "Q" pour quitter la boucle de jeu
+        # Retourne "Q" pour quitter la boucle de jeu
+        return "Q"
 
 class TestJeu(unittest.TestCase):
     def setUp(self):
         self.view = DummyGameView()
-        # Patch de GameState et CommandRegistry dans leurs modules d'origine
-        patcher_gs = patch('core.gameState.GameState', return_value=DummyGameState())
-        patcher_cr = patch('core.registry.CommandRegistry', return_value=DummyCommandRegistry())
+        # Patch de builtins.input pour la création du personnage (via PersonnageFactory)
+        patcher_input = patch('builtins.input', side_effect=["Test", "1"])
+        self.mock_input = patcher_input.start()
+        self.addCleanup(patcher_input.stop)
+        # Patch de GameState et CommandRegistry dans le module plateau.jeu
+        patcher_gs = patch('plateau.jeu.GameState', return_value=DummyGameState())
+        patcher_cr = patch('plateau.jeu.CommandRegistry', return_value=DummyCommandRegistry())
         self.mock_game_state = patcher_gs.start()
         self.mock_command_registry = patcher_cr.start()
         self.addCleanup(patcher_gs.stop)
         self.addCleanup(patcher_cr.stop)
-        # Instanciation de Jeu avec la vue dummy
+        # Instanciation de Jeu (les dépendances dummy sont désormais utilisées)
         self.jeu = Jeu(self.view)
 
     def test_afficher_introduction(self):
@@ -58,11 +66,12 @@ class TestJeu(unittest.TestCase):
         self.jeu._afficher_introduction()
         combined = " ".join(self.view.messages)
         self.assertIn("Bienvenue dans l'aventure", combined)
+        # On s'attend à retrouver le récapitulatif dummy
         self.assertIn("Recap dummy", combined)
         self.assertIn("Commandes disponibles:", combined)
 
     def test_traiter_commande_known(self):
-        """Vérifie que lorsqu'un handler est connu, le résultat du handler est affiché."""
+        """Vérifie que lorsqu'un handler est trouvé, le résultat du handler est affiché."""
         dummy_handler = DummyCommandHandler()
         self.jeu.command_registry = DummyCommandRegistry(handler=dummy_handler)
         self.view.messages = []  # Réinitialiser les messages
@@ -88,7 +97,7 @@ class TestJeu(unittest.TestCase):
 
     def test_run_game_loop_exception(self):
         """Simule une exception lors de la demande de commande pour vérifier la gestion d'erreur."""
-        self.jeu.state.is_running = True  # Activer la boucle
+        self.jeu.state.is_running = True  # Activer la boucle de jeu
         with patch.object(self.view, 'demander_commande', side_effect=Exception("Test error")):
             self.jeu._run_game_loop()
         combined = " ".join(self.view.messages)
