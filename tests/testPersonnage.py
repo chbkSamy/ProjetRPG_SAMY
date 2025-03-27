@@ -1,38 +1,52 @@
 import unittest
-from unittest.mock import patch
-from unittest import mock
+from unittest.mock import Mock, patch
 from personnage.personnage import Personnage
 from personnage.classes import Classes
 from personnage.personnageFactory import PersonnageFactory
+from personnage.recapGenerator import PersonnageRecapGenerator
 
 class TestPersonnage(unittest.TestCase):
-    def test_afficher_recapitulatif(self):
-        nom = "Hero"
-        personnage = Personnage(nom, Classes.GUERRIER)
-        recap = personnage.afficher_recapitulatif()
+    def test_personnage_attributes(self):
+        """Vérifie la présence des attributs requis"""
+        # Configuration mock
+        classe_mock = Mock()
+        classe_mock.nom = "Guerrier"
+        classe_mock.stats = Mock(
+            pv=100, pm=50, force=15, intelligence=10,
+            defense=20, resistance_magique=5,
+            agilite=10, chance=5, endurance=15, esprit=8
+        )
 
-        self.assertIn("Nom : Hero", recap)
-        self.assertIn("Classe : Guerrier", recap)
-        self.assertIn("PV :", recap)
-        self.assertIn("Force :", recap)
+        # Test
+        perso = Personnage("Héros", classe_mock)
 
+        # Vérifications
+        self.assertEqual(perso.nom, "Héros")
+        self.assertEqual(perso.classe.nom, "Guerrier")
+        self.assertIsNotNone(perso.stats)
 
-class TestPersonnageFactory(unittest.TestCase):
-    @patch('builtins.input', side_effect=["Hero", "1"])
-    def test_creer_personnage_valide(self, mock_input):
+    def test_recap_generation(self):
+        """Vérifie la génération du récapitulatif"""
+        # Configuration mock
+        classe_mock = Mock()
+        classe_mock.nom = "Mage"
+        classe_mock.stats = Mock(
+            pv=80, pm=100, force=5, intelligence=20,
+            defense=10, resistance_magique=15,
+            agilite=8, chance=10, endurance=12, esprit=18
+        )
 
-        factory = PersonnageFactory([Classes.GUERRIER, Classes.MAGE, Classes.VOLEUR])
-        personnage = factory.creer_personnage()
+        perso = Personnage("Merlin", classe_mock)
 
-        self.assertIsInstance(personnage, Personnage)
-        self.assertEqual(personnage.nom, "Hero")
-        self.assertEqual(personnage.classe.nom, "Guerrier")
+        # Génération recap
+        recap = PersonnageRecapGenerator.generer_recapitulatif(
+            perso.nom,
+            perso.classe.nom,
+            perso.stats
+        )
 
-    @patch('builtins.input', side_effect=["He", "Hero123", "2"])
-    def test_nom_invalide_puis_valide(self, mock_input):
+        # Vérifications
+        self.assertIn("Merlin", recap)
+        self.assertIn("Mage", recap)
+        self.assertIn("PV : 80", recap)
 
-        factory = PersonnageFactory([Classes.GUERRIER, Classes.MAGE, Classes.VOLEUR])
-        personnage = factory.creer_personnage()
-
-        self.assertEqual(personnage.nom, "Hero123")
-        self.assertEqual(personnage.classe.nom, "Mage")

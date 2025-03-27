@@ -1,8 +1,9 @@
+# plateau/jeu.py
 from core.gameState import GameState
 from .gameView import GameView
 from core.registry import CommandRegistry
 from plateau.controleur_deplacement import ControleurDeplacement
-
+from personnage.recapGenerator import PersonnageRecapGenerator
 
 class Jeu:
     def __init__(self, view: GameView):
@@ -22,9 +23,15 @@ class Jeu:
 
     def _afficher_introduction(self):
         """Affiche les informations initiales du jeu"""
+        recap = PersonnageRecapGenerator.generer_recapitulatif(
+            self.state.personnage.nom,
+            self.state.personnage.classe.nom,
+            self.state.personnage.stats
+        )
+
         intro = f"""
         Bienvenue dans l'aventure !
-        {self.state.personnage.afficher_recapitulatif()}
+        {recap}
         """
         self.view.afficher(intro)
         self._afficher_aide_commandes()
@@ -42,6 +49,7 @@ class Jeu:
                 self.state.is_running = False
 
     def _traiter_commande(self, commande: str):
+        """Traite une commande utilisateur"""
         handler = self.command_registry.get_handler(commande)
 
         if handler:
@@ -50,8 +58,6 @@ class Jeu:
         else:
             self.view.afficher("Commande non reconnue")
             self._afficher_aide_commandes()
-
-
 
     def _afficher_statut(self):
         """Affiche le statut actuel du joueur"""

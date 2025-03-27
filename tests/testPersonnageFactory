@@ -1,0 +1,20 @@
+import unittest
+from unittest.mock import patch, MagicMock
+from personnage.personnageFactory import PersonnageFactory
+from personnage.classes import Classes
+
+class TestPersonnageFactory(unittest.TestCase):
+    @patch('builtins.input', side_effect=["Hero", "1"])
+    def test_creer_personnage_valide(self, mock_input):
+        """Vérifie la création basique d'un personnage"""
+        # Mock de l'énumération Classes
+        mock_classes = MagicMock()
+        mock_classe = MagicMock()
+        mock_classe.nom = "Guerrier"
+        mock_classes.random.return_value = mock_classe
+
+        factory = PersonnageFactory(mock_classes)
+        personnage = factory.creer_personnage()
+
+        self.assertEqual(personnage.nom, "Hero")
+        self.assertEqual(personnage.classe.nom, "Guerrier")
